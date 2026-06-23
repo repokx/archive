@@ -9,11 +9,310 @@
   <title>Slumber Archive</title>
   <meta name="description" content="A blog archive">
 
+  <!-- 页面刚打开时先应用主题，避免白屏闪一下 -->
+  <script>
+    (function () {
+      try {
+        const savedTheme = localStorage.getItem('slumber-theme');
+        const prefersDark = window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+
+  <!-- 自定义浅色 / 深色主题 -->
+  <style>
+    :root {
+      --page-bg: #ffffff;
+      --text-color: #34495e;
+      --heading-color: #2c3e50;
+      --sidebar-bg: #ffffff;
+      --sidebar-text: #364149;
+      --sidebar-border: #eeeeee;
+      --link-color: #42b983;
+      --link-hover-color: #2f9d6a;
+      --code-bg: #f8f8f8;
+      --code-color: #525252;
+      --pre-bg: #f8f8f8;
+      --blockquote-bg: #f8f8f8;
+      --blockquote-border: #42b983;
+      --table-border: #dddddd;
+      --search-bg: #ffffff;
+      --search-border: #eeeeee;
+      --button-bg: #ffffff;
+      --button-text: #34495e;
+      --button-border: #dddddd;
+      --shadow-color: rgba(0, 0, 0, 0.15);
+    }
+
+    html[data-theme="dark"] {
+      --page-bg: #111827;
+      --text-color: #d1d5db;
+      --heading-color: #f3f4f6;
+      --sidebar-bg: #0f172a;
+      --sidebar-text: #cbd5e1;
+      --sidebar-border: #263244;
+      --link-color: #7dd3fc;
+      --link-hover-color: #38bdf8;
+      --code-bg: #1f2937;
+      --code-color: #e5e7eb;
+      --pre-bg: #1f2937;
+      --blockquote-bg: #172033;
+      --blockquote-border: #7dd3fc;
+      --table-border: #374151;
+      --search-bg: #111827;
+      --search-border: #374151;
+      --button-bg: #1f2937;
+      --button-text: #e5e7eb;
+      --button-border: #374151;
+      --shadow-color: rgba(0, 0, 0, 0.45);
+    }
+
+    html,
+    body {
+      background: var(--page-bg);
+      color: var(--text-color);
+    }
+
+    body,
+    .content,
+    .markdown-section {
+      background: var(--page-bg);
+      color: var(--text-color);
+    }
+
+    .markdown-section {
+      color: var(--text-color);
+    }
+
+    .markdown-section h1,
+    .markdown-section h2,
+    .markdown-section h3,
+    .markdown-section h4,
+    .markdown-section h5,
+    .markdown-section h6 {
+      color: var(--heading-color);
+    }
+
+    .markdown-section p,
+    .markdown-section li,
+    .markdown-section td,
+    .markdown-section th {
+      color: var(--text-color);
+    }
+
+    .markdown-section strong {
+      color: var(--heading-color);
+    }
+
+    .markdown-section a,
+    .sidebar ul li.active > a {
+      color: var(--link-color);
+    }
+
+    .markdown-section a:hover {
+      color: var(--link-hover-color);
+    }
+
+    .sidebar {
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      border-right: 1px solid var(--sidebar-border);
+    }
+
+    .sidebar h1,
+    .sidebar h1 a,
+    .app-name-link {
+      color: var(--heading-color);
+    }
+
+    .sidebar ul li a {
+      color: var(--sidebar-text);
+    }
+
+    .sidebar ul li a:hover {
+      color: var(--link-color);
+    }
+
+    .sidebar-toggle {
+      background-color: var(--page-bg);
+    }
+
+    .sidebar-toggle span {
+      background-color: var(--text-color);
+    }
+
+    .markdown-section code {
+      background: var(--code-bg);
+      color: var(--code-color);
+    }
+
+    .markdown-section pre {
+      background: var(--pre-bg);
+    }
+
+    .markdown-section pre > code {
+      background: transparent;
+      color: var(--code-color);
+    }
+
+    .markdown-section blockquote {
+      background: var(--blockquote-bg);
+      border-left-color: var(--blockquote-border);
+      color: var(--text-color);
+    }
+
+    .markdown-section table {
+      border-color: var(--table-border);
+    }
+
+    .markdown-section tr {
+      border-top-color: var(--table-border);
+    }
+
+    .markdown-section td,
+    .markdown-section th {
+      border-color: var(--table-border);
+    }
+
+    .markdown-section hr {
+      border-color: var(--table-border);
+    }
+
+    .search {
+      border-bottom-color: var(--search-border);
+    }
+
+    .search input {
+      background: var(--search-bg);
+      color: var(--text-color);
+      border-color: var(--search-border);
+    }
+
+    .search input::placeholder {
+      color: #9ca3af;
+    }
+
+    .search .results-panel {
+      background: var(--sidebar-bg);
+      color: var(--text-color);
+    }
+
+    .search .matching-post {
+      border-bottom-color: var(--search-border);
+    }
+
+    .search .matching-post a {
+      color: var(--link-color);
+    }
+
+    .search .clear-button {
+      color: var(--text-color);
+    }
+
+    .app-nav a {
+      color: var(--text-color);
+    }
+
+    .anchor span {
+      color: var(--heading-color);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 9999;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--button-border);
+      border-radius: 50%;
+      background: var(--button-bg);
+      color: var(--button-text);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 42px;
+      text-align: center;
+      box-shadow: 0 4px 16px var(--shadow-color);
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.08);
+    }
+
+    .theme-toggle:active {
+      transform: scale(0.96);
+    }
+
+    @media (max-width: 600px) {
+      .theme-toggle {
+        right: 16px;
+        bottom: 16px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        line-height: 38px;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <div id="app">Loading...</div>
+
+  <!-- 深色模式切换按钮 -->
+  <button id="theme-toggle" class="theme-toggle" title="切换深色模式" aria-label="切换深色模式">🌙</button>
+
+  <!-- 深色模式切换逻辑 -->
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const button = document.getElementById('theme-toggle');
+
+      function updateButton(theme) {
+        if (!button) return;
+
+        if (theme === 'dark') {
+          button.textContent = '☀️';
+          button.title = '切换浅色模式';
+          button.setAttribute('aria-label', '切换浅色模式');
+        } else {
+          button.textContent = '🌙';
+          button.title = '切换深色模式';
+          button.setAttribute('aria-label', '切换深色模式');
+        }
+      }
+
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+
+        try {
+          localStorage.setItem('slumber-theme', theme);
+        } catch (e) {}
+
+        updateButton(theme);
+      }
+
+      const currentTheme = root.getAttribute('data-theme') || 'light';
+      updateButton(currentTheme);
+
+      if (button) {
+        button.addEventListener('click', function () {
+          const now = root.getAttribute('data-theme') || 'light';
+          const next = now === 'dark' ? 'light' : 'dark';
+          applyTheme(next);
+        });
+      }
+    })();
+  </script>
 
   <script>
     window.$docsify = {
@@ -38,14 +337,24 @@
 
       markdown: {
         renderer: {
-          code: function(code, lang) {
+          code: function (code, lang) {
             if (lang === 'math') {
               return '<div class="math">\\[' + code + '\\]</div>';
             }
             return this.origin.code.apply(this, arguments);
           }
         }
-      }
+      },
+
+      plugins: [
+        function (hook) {
+          hook.doneEach(function () {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+              window.MathJax.typesetPromise();
+            }
+          });
+        }
+      ]
     };
   </script>
 
@@ -58,7 +367,7 @@
         processEscapes: true,
         processEnvironments: true,
         tags: 'ams',
-        packages: {'[+]': ['ams', 'boldsymbol', 'mathtools', 'physics']}
+        packages: { '[+]': ['ams', 'boldsymbol', 'mathtools', 'physics'] }
       },
       loader: {
         load: ['[tex]/ams', '[tex]/boldsymbol', '[tex]/mathtools', '[tex]/physics']
@@ -89,17 +398,6 @@
 
   <!-- MathJax -->
   <script defer src="//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
-  <!-- Docsify + MathJax 重渲染钩子 -->
-  <script>
-    window.$docsify.plugins = [].concat(function(hook) {
-      hook.doneEach(function() {
-        if (window.MathJax && window.MathJax.typesetPromise) {
-          window.MathJax.typesetPromise();
-        }
-      });
-    }, window.$docsify.plugins || []);
-  </script>
 
   <!-- 代码高亮：按需扩展 -->
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
